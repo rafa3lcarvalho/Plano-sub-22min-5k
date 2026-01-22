@@ -92,7 +92,7 @@
             cursor: pointer;
             font-weight: 600;
         }
-        .btn-export { background: #3b82f6; color: white; }
+        .btn-export { background: #10b981; color: white; }
         .btn-details { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
         .type-badge {
             display: inline-block;
@@ -187,7 +187,7 @@
             </div>
         </div>
         <div class="controls">
-            <button class="btn btn-primary" onclick="exportAllWorkouts()">📤 Exportar Todos</button>
+            <button class="btn btn-primary" onclick="exportAllWorkouts()">📥 Baixar Todos TCX</button>
             <button class="btn btn-secondary" onclick="resetProgress()">🔄 Resetar Progresso</button>
         </div>
         <div class="filter-section">
@@ -201,47 +201,48 @@
     <div id="exportModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Treino Exportado</h3>
+                <h3 class="modal-title">Detalhes do Treino</h3>
                 <button class="close-btn" onclick="closeModal()">×</button>
             </div>
             <div id="exportContent"></div>
             <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="copyToClipboard()">📋 Copiar</button>
         </div>
     </div>
-    <script>
+<script>
 const workouts = [
-{id: 1, week: 1, day: 1, name: "Corrida Fácil - 20min", type: "EASY_RUN", description: "Aquecimento 5min caminhada + 20min corrida leve + 5min volta à calma", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1200, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 2, week: 1, day: 3, name: "Intervalados Curtos", type: "INTERVAL", description: "Aquecimento + 6x (1min rápido / 2min recuperação) + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 3, week: 1, day: 5, name: "Corrida Longa - 25min", type: "LONG_RUN", description: "Corrida contínua em ritmo confortável", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 4, week: 2, day: 1, name: "Corrida Fácil - 25min", type: "EASY_RUN", description: "Aquecimento 5min + 25min corrida leve + 5min volta à calma", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 5, week: 2, day: 3, name: "Fartlek - 30min", type: "INTERVAL", description: "Aquecimento + 20min alternando ritmos (2min rápido / 1min leve) + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 6, week: 2, day: 5, name: "Corrida Longa - 30min", type: "LONG_RUN", description: "Corrida contínua em ritmo confortável", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 7, week: 3, day: 1, name: "Corrida Fácil - 30min", type: "EASY_RUN", description: "Corrida leve e confortável", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 8, week: 3, day: 3, name: "Intervalados 400m", type: "INTERVAL", description: "Aquecimento + 8x 400m (2min intenso / 1min30s recuperação) + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 9, week: 3, day: 5, name: "Corrida Longa - 35min", type: "LONG_RUN", description: "Corrida contínua em ritmo confortável", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2100, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 10, week: 4, day: 1, name: "Corrida Fácil - 25min", type: "RECOVERY", description: "Semana de recuperação - ritmo leve", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 11, week: 4, day: 3, name: "Corrida Fácil - 20min", type: "RECOVERY", description: "Corrida muito leve - recuperação ativa", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1200, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 12, week: 4, day: 5, name: "Corrida Longa - 30min", type: "LONG_RUN", description: "Corrida leve e relaxada", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 13, week: 5, day: 1, name: "Corrida Fácil - 30min", type: "EASY_RUN", description: "Corrida leve para recuperação", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 14, week: 5, day: 3, name: "Tempo Run - 20min", type: "TEMPO_RUN", description: "Aquecimento + 20min ritmo forte sustentável + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 1200, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
-{id: 15, week: 5, day: 5, name: "Intervalados 1km", type: "INTERVAL", description: "Aquecimento + 5x 1km (ritmo 5k / 2min recuperação) + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
-{id: 16, week: 6, day: 1, name: "Corrida Fácil - 35min", type: "EASY_RUN", description: "Corrida leve", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2100, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 17, week: 6, day: 3, name: "Intervalados 800m", type: "INTERVAL", description: "Aquecimento + 6x 800m (3min intenso / 90s recuperação) + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
-{id: 18, week: 6, day: 5, name: "Teste 5km", type: "TEMPO_RUN", description: "Aquecimento + 5km em ritmo forte (teste de performance) + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "VERY_HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
-{id: 19, week: 7, day: 1, name: "Corrida Fácil - 40min", type: "EASY_RUN", description: "Começando a aumentar a distância", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2400, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 20, week: 7, day: 3, name: "Tempo Run - 25min", type: "TEMPO_RUN", description: "Aquecimento + 25min ritmo forte + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
-{id: 21, week: 7, day: 5, name: "Corrida Longa - 50min", type: "LONG_RUN", description: "Primeira corrida longa de 50 minutos", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 3000, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 22, week: 8, day: 1, name: "Corrida Fácil - 35min", type: "EASY_RUN", description: "Recuperação", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2100, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 23, week: 8, day: 3, name: "Intervalados 2km", type: "INTERVAL", description: "Aquecimento + 4x 2km (ritmo 10k / 2min recuperação) + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 600, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 600, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 600, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 600, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
-{id: 24, week: 8, day: 5, name: "Corrida Longa - 55min", type: "LONG_RUN", description: "Aumentando a resistência", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 3300, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 25, week: 9, day: 1, name: "Corrida Fácil - 40min", type: "EASY_RUN", description: "Corrida leve de recuperação", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2400, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 26, week: 9, day: 3, name: "Tempo Run - 30min", type: "TEMPO_RUN", description: "Aquecimento + 30min ritmo forte + volta à calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
-{id: 27, week: 9, day: 5, name: "Corrida Longa - 60min", type: "LONG_RUN", description: "Maior volume da semana", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 3600, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 28, week: 10, day: 1, name: "Corrida Fácil - 30min", type: "RECOVERY", description: "Semana de taper - reduzindo volume", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 29, week: 10, day: 3, name: "Corrida Fácil - 25min", type: "RECOVERY", description: "Leve com alguns piques curtos", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
-{id: 30, week: 10, day: 6, name: "PROVA - 10KM", type: "TEMPO_RUN", description: "DIA DA PROVA! Aquecimento leve + 10km + comemoração!", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 3000, intensity: "VERY_HARD"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]}
+{id: 1, week: 1, day: 1, name: "Corrida Facil 20min", type: "EASY_RUN", description: "Aquecimento 5min caminhada + 20min corrida leve + 5min volta a calma", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1200, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 2, week: 1, day: 3, name: "Intervalados Curtos", type: "INTERVAL", description: "Aquecimento + 6x (1min rapido / 2min recuperacao) + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 60, intensity: "HARD"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 3, week: 1, day: 5, name: "Corrida Longa 25min", type: "LONG_RUN", description: "Corrida continua em ritmo confortavel", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 4, week: 2, day: 1, name: "Corrida Facil 25min", type: "EASY_RUN", description: "Aquecimento 5min + 25min corrida leve + 5min volta a calma", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 5, week: 2, day: 3, name: "Fartlek 30min", type: "INTERVAL", description: "Aquecimento + 20min alternando ritmos (2min rapido / 1min leve) + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 60, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 6, week: 2, day: 5, name: "Corrida Longa 30min", type: "LONG_RUN", description: "Corrida continua em ritmo confortavel", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 7, week: 3, day: 1, name: "Corrida Facil 30min", type: "EASY_RUN", description: "Corrida leve e confortavel", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 8, week: 3, day: 3, name: "Intervalados 400m", type: "INTERVAL", description: "Aquecimento + 8x 400m (2min intenso / 1min30s recuperacao) + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 120, intensity: "HARD"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 9, week: 3, day: 5, name: "Corrida Longa 35min", type: "LONG_RUN", description: "Corrida continua em ritmo confortavel", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2100, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 10, week: 4, day: 1, name: "Corrida Facil 25min", type: "RECOVERY", description: "Semana de recuperacao - ritmo leve", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 11, week: 4, day: 3, name: "Corrida Facil 20min", type: "RECOVERY", description: "Corrida muito leve - recuperacao ativa", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1200, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 12, week: 4, day: 5, name: "Corrida Longa 30min", type: "LONG_RUN", description: "Corrida leve e relaxada", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 13, week: 5, day: 1, name: "Corrida Facil 30min", type: "EASY_RUN", description: "Corrida leve para recuperacao", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 14, week: 5, day: 3, name: "Tempo Run 20min", type: "TEMPO_RUN", description: "Aquecimento + 20min ritmo forte sustentavel + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 1200, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
+{id: 15, week: 5, day: 5, name: "Intervalados 1km", type: "INTERVAL", description: "Aquecimento + 5x 1km (ritmo 5k / 2min recuperacao) + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 300, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
+{id: 16, week: 6, day: 1, name: "Corrida Facil 35min", type: "EASY_RUN", description: "Corrida leve", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2100, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 17, week: 6, day: 3, name: "Intervalados 800m", type: "INTERVAL", description: "Aquecimento + 6x 800m (3min intenso / 90s recuperacao) + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "REST", duration: 90, intensity: "EASY"}, {type: "WORK", duration: 180, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
+{id: 18, week: 6, day: 5, name: "Teste 5km", type: "TEMPO_RUN", description: "Aquecimento + 5km em ritmo forte (teste de performance) + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "VERY_HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
+{id: 19, week: 7, day: 1, name: "Corrida Facil 40min", type: "EASY_RUN", description: "Comecando a aumentar a distancia", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2400, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 20, week: 7, day: 3, name: "Tempo Run 25min", type: "TEMPO_RUN", description: "Aquecimento + 25min ritmo forte + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
+{id: 21, week: 7, day: 5, name: "Corrida Longa 50min", type: "LONG_RUN", description: "Primeira corrida longa de 50 minutos", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 3000, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 22, week: 8, day: 1, name: "Corrida Facil 35min", type: "EASY_RUN", description: "Recuperacao", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2100, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 23, week: 8, day: 3, name: "Intervalados 2km", type: "INTERVAL", description: "Aquecimento + 4x 2km (ritmo 10k / 2min recuperacao) + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 600, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 600, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 600, intensity: "HARD"}, {type: "REST", duration: 120, intensity: "EASY"}, {type: "WORK", duration: 600, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
+{id: 24, week: 8, day: 5, name: "Corrida Longa 55min", type: "LONG_RUN", description: "Aumentando a resistencia", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 3300, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 25, week: 9, day: 1, name: "Corrida Facil 40min", type: "EASY_RUN", description: "Corrida leve de recuperacao", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 2400, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 26, week: 9, day: 3, name: "Tempo Run 30min", type: "TEMPO_RUN", description: "Aquecimento + 30min ritmo forte + volta a calma", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "HARD"}, {type: "COOLDOWN", duration: 600, intensity: "EASY"}]},
+{id: 27, week: 9, day: 5, name: "Corrida Longa 60min", type: "LONG_RUN", description: "Maior volume da semana", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 3600, intensity: "MODERATE"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 28, week: 10, day: 1, name: "Corrida Facil 30min", type: "RECOVERY", description: "Semana de taper - reduzindo volume", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1800, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 29, week: 10, day: 3, name: "Corrida Facil 25min", type: "RECOVERY", description: "Leve com alguns piques curtos", intervals: [{type: "WARMUP", duration: 300, intensity: "EASY"}, {type: "WORK", duration: 1500, intensity: "EASY"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]},
+{id: 30, week: 10, day: 6, name: "PROVA 10KM", type: "TEMPO_RUN", description: "DIA DA PROVA! Aquecimento leve + 10km + comemoracao!", intervals: [{type: "WARMUP", duration: 600, intensity: "EASY"}, {type: "WORK", duration: 3000, intensity: "VERY_HARD"}, {type: "COOLDOWN", duration: 300, intensity: "EASY"}]}
 ];
-        let completedWorkouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
+
+let completedWorkouts = JSON.parse(localStorage.getItem('completedWorkouts') || '[]');
 
 function init() {
     populateWeekFilter();
@@ -294,138 +295,177 @@ function renderWorkouts() {
                 </div>
             </div>
             <div class="workout-actions">
-                <button class="btn-small btn-export" onclick="exportWorkout(${workout.id})">📤 Exportar</button>
-                <button class="btn-small btn-details" onclick="showDetails(${workout.id})">📋 Detalhes</button>
-            </div>
-        </div>
-    `).join('');
+                <button class="btn-small btn
+                -export" onclick="exportWorkout(${workout.id})">📥 Baixar TCX</button>
+<button class="btn-small btn-details" onclick="showDetails(${workout.id})">📋 Ver Detalhes</button>
+</div>
+</div>
+`).join('');
 }
-
 function toggleWorkout(id) {
-    const index = completedWorkouts.indexOf(id);
-    if (index > -1) {
-        completedWorkouts.splice(index, 1);
-    } else {
-        completedWorkouts.push(id);
-    }
-    localStorage.setItem('completedWorkouts', JSON.stringify(completedWorkouts));
-    renderWorkouts();
-    updateStats();
+const index = completedWorkouts.indexOf(id);
+if (index > -1) {
+completedWorkouts.splice(index, 1);
+} else {
+completedWorkouts.push(id);
 }
-
+localStorage.setItem('completedWorkouts', JSON.stringify(completedWorkouts));
+renderWorkouts();
+updateStats();
+}
 function updateStats() {
-    document.getElementById('totalWorkouts').textContent = workouts.length;
-    document.getElementById('completedWorkouts').textContent = completedWorkouts.length;
-    const percent = Math.round((completedWorkouts.length / workouts.length) * 100);
-    document.getElementById('progressPercent').textContent = percent + '%';
+document.getElementById('totalWorkouts').textContent = workouts.length;
+document.getElementById('completedWorkouts').textContent = completedWorkouts.length;
+const percent = Math.round((completedWorkouts.length / workouts.length) * 100);
+document.getElementById('progressPercent').textContent = percent + '%';
 }
-
 function formatDuration(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return secs > 0 ? `${minutes}min ${secs}s` : `${minutes}min`;
+const minutes = Math.floor(seconds / 60);
+const secs = seconds % 60;
+return secs > 0 ? ${minutes}min ${secs}s : ${minutes}min;
 }
-
 function getTypeLabel(type) {
-    const labels = {
-        'EASY_RUN': 'Corrida Fácil',
-        'TEMPO_RUN': 'Tempo Run',
-        'INTERVAL': 'Intervalado',
-        'LONG_RUN': 'Long Run',
-        'RECOVERY': 'Recuperação'
-    };
-    return labels[type] || type;
+const labels = {
+'EASY_RUN': 'Corrida Facil',
+'TEMPO_RUN': 'Tempo Run',
+'INTERVAL': 'Intervalado',
+'LONG_RUN': 'Long Run',
+'RECOVERY': 'Recuperacao'
+};
+return labels[type] || type;
 }
-
 function getIntervalLabel(type) {
-    const labels = {
-        'WARMUP': 'Aquecimento',
-        'WORK': 'Trabalho',
-        'REST': 'Recuperação',
-        'COOLDOWN': 'Volta à Calma'
-    };
-    return labels[type] || type;
+const labels = {
+'WARMUP': 'Aquecimento',
+'WORK': 'Trabalho',
+'REST': 'Recuperacao',
+'COOLDOWN': 'Volta a Calma'
+};
+return labels[type] || type;
 }
-
 function exportWorkout(id) {
-    const workout = workouts.find(w => w.id === id);
-    const content = generateWorkoutText(workout);
-    document.getElementById('exportContent').innerHTML = `<div class="export-content">${content}</div>`;
-    document.getElementById('exportModal').style.display = 'block';
+const workout = workouts.find(w => w.id === id);
+const tcxContent = generateTCX(workout);
+const blob = new Blob([tcxContent], { type: 'application/xml' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = treino_${workout.id}_${workout.name.replace(/\s+/g, '_')}.tcx;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+alert('✅ Arquivo TCX baixado!\n\nAgora:\n1. Abra o Garmin Connect no navegador\n2. Va em Treinos → Importar\n3. Selecione o arquivo TCX baixado');
 }
+function generateTCX(workout) {
+const timestamp = new Date().toISOString();
+let tcx = <?xml version="1.0" encoding="UTF-8"?> <TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2">   <Workouts>     <Workout Sport="Running">       <Name>${workout.name}</Name>       <Step xsi:type="Step_t" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">         <StepId>1</StepId>         <Name>Treino Completo</Name>         <Duration xsi:type="Time_t">           <Seconds>${workout.intervals.reduce((sum, i) => sum + i.duration, 0)}</Seconds>         </Duration>         <Intensity>Active</Intensity>         <Target xsi:type="None_t"/>       </Step>\n;
+workout.intervals.forEach((interval, index) => {
+    const stepId = index + 2;
+    const hrZone = getHeartRateZone(interval.intensity);
+    const intensityType = interval.type === 'REST' || interval.type === 'WARMUP' || interval.type === 'COOLDOWN' ? 'Warmup' : 'Active';
+    
+    tcx += `      <Step xsi:type="Step_t" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <StepId>${stepId}</StepId>
+    <Name>${getIntervalLabel(interval.type)}</Name>
+    <Duration xsi:type="Time_t">
+      <Seconds>${interval.duration}</Seconds>
+    </Duration>
+    <Intensity>${intensityType}</Intensity>
+    <Target xsi:type="HeartRate_t">
+      <HeartRateZone xsi:type="PredefinedHeartRateZone_t">
+        <Number>${hrZone}</Number>
+      </HeartRateZone>
+    </Target>
+  </Step>\n`;
+});
 
+tcx += `    </Workout>
+  </Workouts>
+</TrainingCenterDatabase>`;
+return tcx;
+}
+function getHeartRateZone(intensity) {
+switch(intensity) {
+case 'EASY': return 2;
+case 'MODERATE': return 3;
+case 'HARD': return 4;
+case 'VERY_HARD': return 5;
+default: return 2;
+}
+}
 function generateWorkoutText(workout) {
-    let text = '========================================\n';
-    text += `TREINO: ${workout.name}\n`;
-    text += `Semana ${workout.week} - Dia ${workout.day}\n`;
-    text += '========================================\n\n';
-    text += `Descrição: ${workout.description}\n\n`;
-    text += 'INTERVALOS:\n';
-    text += '----------------------------------------\n\n';
-    workout.intervals.forEach((interval, index) => {
-        text += `${index + 1}. ${getIntervalLabel(interval.type)}\n`;
-        text += `   Duração: ${formatDuration(interval.duration)}\n`;
-        text += `   Intensidade: ${interval.intensity}\n\n`;
-    });
-    const totalTime = workout.intervals.reduce((sum, i) => sum + i.duration, 0);
-    text += '========================================\n';
-    text += `Tempo Total: ${formatDuration(totalTime)}\n`;
-    text += '========================================';
-    return text;
+let text = '========================================\n';
+text += TREINO: ${workout.name}\n;
+text += Semana ${workout.week} - Dia ${workout.day}\n;
+text += '========================================\n\n';
+text += Descricao: ${workout.description}\n\n;
+text += 'INTERVALOS:\n';
+text += '----------------------------------------\n\n';
+workout.intervals.forEach((interval, index) => {
+text += ${index + 1}. ${getIntervalLabel(interval.type)}\n;
+text +=    Duracao: ${formatDuration(interval.duration)}\n;
+text +=    Intensidade: ${interval.intensity}\n\n;
+});
+const totalTime = workout.intervals.reduce((sum, i) => sum + i.duration, 0);
+text += '========================================\n';
+text += Tempo Total: ${formatDuration(totalTime)}\n;
+text += '========================================';
+return text;
 }
-
 function exportAllWorkouts() {
-    let allText = 'PLANO DE CORRIDA COMPLETO - 10 SEMANAS\n';
-    allText += 'Rumo aos 5km e 10km\n';
-    allText += '========================================\n\n';
-    workouts.forEach(workout => {
-        allText += generateWorkoutText(workout) + '\n\n\n';
-    });
-    const blob = new Blob([allText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'plano-corrida-completo.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    alert('✅ Todos os treinos exportados!');
+let count = 0;
+workouts.forEach(workout => {
+setTimeout(() => {
+const tcxContent = generateTCX(workout);
+const blob = new Blob([tcxContent], { type: 'application/xml' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = treino_${workout.id}_${workout.name.replace(/\s+/g, '_')}.tcx;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+count++;
+if (count === workouts.length) {
+alert('✅ Todos os 30 treinos foram baixados em TCX!\n\nAgora importe no Garmin Connect:\n1. Acesse connect.garmin.com\n2. Va em Treinos → Importar\n3. Selecione todos os arquivos TCX');
 }
-
+}, count * 100);
+});
+}
 function showDetails(id) {
-    exportWorkout(id);
+const workout = workouts.find(w => w.id === id);
+const content = generateWorkoutText(workout);
+document.getElementById('exportContent').innerHTML = <div class="export-content">${content}</div>;
+document.getElementById('exportModal').style.display = 'block';
 }
-
 function closeModal() {
-    document.getElementById('exportModal').style.display = 'none';
+document.getElementById('exportModal').style.display = 'none';
 }
-
 function copyToClipboard() {
-    const content = document.getElementById('exportContent').textContent;
-    navigator.clipboard.writeText(content).then(() => {
-        alert('✅ Treino copiado!');
-    });
+const content = document.getElementById('exportContent').textContent;
+navigator.clipboard.writeText(content).then(() => {
+alert('✅ Treino copiado!');
+});
 }
-
 function resetProgress() {
-    if (confirm('Tem certeza que deseja resetar todo o progresso?')) {
-        completedWorkouts = [];
-        localStorage.setItem('completedWorkouts', JSON.stringify(completedWorkouts));
-        renderWorkouts();
-        updateStats();
-        alert('✅ Progresso resetado!');
-    }
+if (confirm('Tem certeza que deseja resetar todo o progresso?')) {
+completedWorkouts = [];
+localStorage.setItem('completedWorkouts', JSON.stringify(completedWorkouts));
+renderWorkouts();
+updateStats();
+alert('✅ Progresso resetado!');
 }
-
+}
 window.onclick = function(event) {
-    const modal = document.getElementById('exportModal');
-    if (event.target === modal) {
-        closeModal();
-    }
+const modal = document.getElementById('exportModal');
+if (event.target === modal) {
+closeModal();
 }
-
+}
 init();
 </script>
 </body>
 </html>
+```
